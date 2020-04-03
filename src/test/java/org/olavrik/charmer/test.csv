@@ -1,0 +1,4 @@
+name,mass_to_earth
+"""Earth, planet""",1.0
+Moon,0.606
+Mars,0.107
