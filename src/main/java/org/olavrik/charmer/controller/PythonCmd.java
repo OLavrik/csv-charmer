@@ -1,5 +1,7 @@
 package org.olavrik.charmer.controller;
 
+import java.util.ArrayList;
+
 public class PythonCmd {
 
     public static String[] getDataFrameSize() {
@@ -7,19 +9,31 @@ public class PythonCmd {
     }
 
     public static String[] getDataFrame() {
-        return new String[]{"print(*(';'.join([str(_) for _ in df.iloc[index].to_list()]) for index in range(len(df))), sep='\\n' )"};
+        return new String[]{"print(*(';'.join([str(_) for _ in df.iloc[index].to_list()]) " +
+                "for index in range(len(df))), sep='\\n' )"};
     }
 
     public static String[] loadDataFrame(String filename) {
-        return new String[]{"filename=\"" + filename + "\"", "df=pd.read_csv(filename, sep=',')"};
+        StringBuilder commands=new StringBuilder("filename=\"" );
+
+        commands.append(filename);
+        commands.append("\"");
+
+        return new String[]{commands.toString(), "df=pd.read_csv(filename, sep=',')"};
     }
 
     public static String[] init() {
-        return new String[]{"import pandas as pd", "pd.set_option('display.max_rows', None)", "pd.set_option('display.max_columns', None)"};
+        return new String[]{"import pandas as pd", "pd.set_option('display.max_rows', None)",
+                "pd.set_option('display.max_columns', None)"};
     }
 
     public static String[] getDatFrameSlice(int start, int end) {
-        return new String[]{"print(df[" + Integer.toString(start) + ":" + Integer.toString(end) + "])"};
+        StringBuilder commands=new StringBuilder("print(df[");
+        commands.append(start);
+        commands.append(":");
+        commands.append(end);
+        commands.append("])");
+        return new String[]{commands.toString()};
     }
 
     public static String[] getNumColumns() {
@@ -30,46 +44,58 @@ public class PythonCmd {
         return new String[]{"print(len(df)-1)"};
     }
 
-    public static String[] addRow(String rowVal, String indexCSV) {
-        Integer indexRow = new Integer(indexCSV);
 
-        String[] rowValues = rowVal.split(", ");
-        String commands = new String();
+    public static String[] addRow(Integer indexRow, ArrayList<String> row) {
+        String[] commands = new String[6];
 
-        if (indexRow == -1) {
-            // should be string templating elseway you are creating new cope for each + operation
-            commands += "df.append([";
-            for (int index = 0; index < rowValues.length - 1; index++) {
-                commands += "\"" + rowValues[index] + "\", ";
-            }
-            commands += rowValues[rowValues.length] + "])";
+        commands[0] = "insert_before=" + indexRow;
+        commands[1] = "df1 = df[:insert_before]";
+        commands[2] = "df2 = df[insert_before:]";
+        commands[3] = "new_row = pd.DataFrame(columns=list(df1.columns.values))";
 
-        } else {
-            commands += "df=pd.concat([pd.concat([df[:" + indexCSV + "],pd.Series([";
-            for (int index = 0; index < rowValues.length - 1; index++) {
-                commands += "\"" + rowValues[index] + "\", ";
-            }
-            commands += rowValues[rowValues.length-1] + "])], ignore_index=True),df[" + indexCSV + ":]],, ignore_index=True)";
+        StringBuilder rowArray = new StringBuilder("new_row.loc[0] =[");
 
+        for (int index = 0; index < row.size() - 1; index++) {
+            rowArray.append("\"");
+            rowArray.append(row.get(index));
+            rowArray.append("\",");
         }
-        return new String[]{commands};
+
+        rowArray.append("\"");
+        rowArray.append(row.get(row.size() - 1));
+        rowArray.append("\"]");
+
+        commands[4] = rowArray.toString();
+        commands[5] = "df = pd.concat([df1, new_row, df2])";
+
+        return commands;
     }
 
     public static String[] changeValueCell(String header, Integer rowCount, String newValue) {
-        return new String[]{"df.set_value(\"" + rowCount + "\", \"" + header + "\", " + newValue + ")"};
+        StringBuilder commands = new StringBuilder("df.set_value(\"");
+
+        commands.append(rowCount);
+        commands.append("\", \"");
+        commands.append(header);
+        commands.append("\", ");
+        commands.append("newValue");
+        commands.append(")");
+
+        return new String[]{commands.toString()};
     }
 
-    public static String[] deletRow(String indexRow) {
-        return new String[]{"df=df.drop(" + indexRow + ",axis=0)"};
+    public static String[] deletRow(Integer indexRow) {
+        StringBuilder commands = new StringBuilder("df=df.drop([");
+
+        commands.append(indexRow);
+        commands.append("])");
+
+        return new String[]{commands.toString()};
     }
 
-    public static String[] deleteColumn(String columnName) {
-        return new String[]{"df=df.drop(\"" + columnName + "\", axis=1)"};
-    }
 
-
-    public static String[] saveCSV(String filename) {
-        return new String[]{"df.to_csv(\"" + filename + "\", index = False)"};
+    public static String[] saveCSV() {
+        return new String[]{"df.to_csv(filename, index = False)"};
     }
 
 
