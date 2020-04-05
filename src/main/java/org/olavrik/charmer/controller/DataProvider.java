@@ -6,6 +6,7 @@ import org.olavrik.charmer.model.PythonWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public final class DataProvider {
@@ -103,6 +104,26 @@ public final class DataProvider {
 
     }
 
+
+    public HashMap<String, int[]> getCSVHistograms(final String[] headerCaptions) {
+        ArrayList<String> outputArray = this.pythonWrapper.runCmd(PythonCmd.getDataHistograms(), true);
+
+        HashMap<String, int[]> data = new HashMap<String, int[]>();
+
+        for (int index = 0; index < outputArray.size(); index++) {
+            String[] lines = outputArray.get(index).split(";");
+
+            int[] values = new int[lines.length];
+            for (int j = 0; j < lines.length; j++) {
+                values[j] = Integer.parseInt(lines[j]);
+            }
+            data.put(headerCaptions[index + 1], values);
+        }
+        data.put(headerCaptions[0], new int[]{0, 0});
+
+        return data;
+    }
+
     public void changeCellValue(final Integer indexRow, final String nameColumn, final String newVal) {
         this.pythonWrapper.runCmd(PythonCmd.changeValueCell(indexRow, nameColumn, newVal), false);
     }
@@ -115,7 +136,6 @@ public final class DataProvider {
         this.pythonWrapper.runCmd(PythonCmd.addRow(indexRow, newRow), false);
 
     }
-
 
 }
 

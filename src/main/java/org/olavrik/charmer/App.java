@@ -21,6 +21,10 @@ public final class App {
         while (!dataProvider.setPythonPathIfPossible(pythonPath)) {
             pythonPath = JOptionPane.showInputDialog(tableManager,
                     "Python 3 was not found, please, enter python3 location:");
+            if (pythonPath == null) {
+                System.exit(0);
+
+            }
         }
 
         String filename = JOptionPane.showInputDialog(tableManager, "Enter csv path:");

@@ -6,12 +6,14 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class TableManager extends JFrame {
     private Object[] columnsHeader;
@@ -41,12 +43,18 @@ public final class TableManager extends JFrame {
 
         String[] header = dataProvider.getCSVHeader();
         String[][] data = dataProvider.getCSVContent();
+        HashMap<String, int[]> dataHistograms = dataProvider.getCSVHistograms(header);
+
         this.dataArray = data;
         this.columnsHeader = header;
+
         setTitle(fileName);
+
         model = new DefaultTableModel(dataArray, columnsHeader);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
         table1 = new JTable(model);
+
         table1.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(final TableModelEvent e) {
@@ -62,8 +70,11 @@ public final class TableManager extends JFrame {
         });
 
         table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table1.getTableHeader().setDefaultRenderer(new SimpleHeaderRenderer(dataHistograms));
+
         contents = new Box(BoxLayout.Y_AXIS);
         contents.add(new JScrollPane(table1));
+
         new PopupMenu();
         setContentPane(contents);
         contents.add(new FooterPanel());
@@ -174,7 +185,7 @@ public final class TableManager extends JFrame {
     class FooterPanel extends JPanel implements ActionListener {
         FooterPanel() {
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            final int panelHeight = 20;
+            final int panelHeight = 40;
             setPreferredSize(new Dimension(screenSize.width, panelHeight));
 
             JButton button1 = new JButton("Save CSV");
@@ -195,6 +206,42 @@ public final class TableManager extends JFrame {
                 }
             }
 
+        }
+    }
+
+    class SimpleHeaderRenderer extends JPanel implements TableCellRenderer {
+        private JLabel label;
+        private final HeaderHistogram hist;
+
+        SimpleHeaderRenderer(final HashMap<String, int[]> histogramBins) {
+            super(new BorderLayout());
+
+            Box contentsHist = new Box(BoxLayout.Y_AXIS);
+            this.label = new JLabel();
+            final int size = 12;
+            this.label.setFont(new Font("Consolas", Font.BOLD, size));
+            contentsHist.add(label);
+
+            this.hist = new HeaderHistogram();
+            contentsHist.add(this.hist);
+
+            this.hist.set(histogramBins);
+
+            this.add(contentsHist);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(final JTable table, final Object value,
+                                                       final boolean isSelected, final boolean hasFocus,
+                                                       final int row, final int column) {
+            this.label.setText(value.toString());
+            this.hist.setCurrent(value.toString());
+            return this;
+        }
+
+        @Override
+        public BaselineResizeBehavior getBaselineResizeBehavior() {
+            return super.getBaselineResizeBehavior();
         }
     }
 
