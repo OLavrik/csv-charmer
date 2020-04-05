@@ -15,19 +15,19 @@ public class App {
 
         String pythonPath = null;
 
-        while (!dataProvider.checkPython(pythonPath)) {
+        while (!dataProvider.setPythonPathIfPossible(pythonPath)) {
             pythonPath = JOptionPane.showInputDialog(tableManager,
                     "Python 3 was not found, please, enter python3 location:");
         }
 
         String filename = JOptionPane.showInputDialog(tableManager, "Enter csv path:");
-        if (filename==null){
+        if (filename == null) {
             tableManager.dispose();
 
-        }
-        else {
+        } else {
             while (!dataProvider.checkFile(filename)) {
-                JOptionPane.showMessageDialog(null, "Error, file doesn't exist, please try again");
+                JOptionPane.showMessageDialog(null,
+                        "Error, file doesn't exist, please try again");
                 filename = JOptionPane.showInputDialog(tableManager, "Enter csv path:");
             }
 

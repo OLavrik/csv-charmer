@@ -1,3 +1,6 @@
+/**
+ * Info about this package doing something for package-info.java file.
+ */
 package org.olavrik.charmer.controller;
 
 import org.olavrik.charmer.model.PythonWrapper;
@@ -8,40 +11,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataProvider {
-    PythonWrapper pythonWrapper;
-    String pythonPath;
+    private PythonWrapper pythonWrapper;
+    private String pythonPath;
 
 
-    public static String[] concat(String[] arr, String... elements) {
+    public static String[] concat(final String[] arr, final String... elements) {
         String[] tempArr = new String[arr.length + elements.length];
         System.arraycopy(arr, 0, tempArr, 0, arr.length);
 
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             tempArr[arr.length + i] = elements[i];
+        }
+
         return tempArr;
 
     }
 
-    public Boolean checkPython(String s) throws InterruptedException {
+    public Boolean setPythonPathIfPossible(String pythonPath) throws InterruptedException {
         PythonWrapper pythonWrapper = new PythonWrapper();
-        pythonWrapper.setPythonPath(s);
-        pythonPath = pythonWrapper.getPythonPath();
+
+        pythonPath = pythonPath != null ? pythonPath.replace('\\', '/') : pythonPath;
+
+        pythonWrapper.setPythonPath(pythonPath);
+        this.pythonPath = pythonWrapper.getPythonPath();
         return pythonWrapper.checkPython();
     }
 
     public Boolean checkFile(String filePath) {
-        return new File(filePath).exists();
+        return new File(filePath.replace('\\', '/')).exists();
     }
 
 
     public void openCSVSession(String filename) throws IOException {
         this.pythonWrapper = new PythonWrapper();
-        // if you use this you should use it everywhere
+
         this.pythonWrapper.setPythonPath(pythonPath);
         this.pythonWrapper.startProcess();
         this.pythonWrapper.runCmd(PythonCmd.init(), false);
-        this.pythonWrapper.runCmd(PythonCmd.loadDataFrame(filename), false);
-
+        this.pythonWrapper.runCmd(PythonCmd.loadDataFrame(filename.replace('\\', '/')), false);
     }
 
 
@@ -53,22 +60,21 @@ public class DataProvider {
         String line;
 
         for (int index = 0; index < outputArray.size(); index++) {
-            int strLength = outputArray.get(index).length();
             line = index + ";" + outputArray.get(index);
             data.add(line.split(";"));
         }
 
-        // rename dataa to dataArray
-        String[][] dataa = new String[data.size()][data.get(0).length];
+
+        String[][] dataArray = new String[data.size()][data.get(0).length];
         for (int i = 0; i < data.size(); i++) {
-            dataa[i] = data.get(i);
+            dataArray[i] = data.get(i);
         }
 
-        return dataa;
+        return dataArray;
 
     }
 
-    public String getCSVSize()  {
+    public String getCSVSize() {
         ArrayList<String> outputArray = this.pythonWrapper.runCmd(PythonCmd.getDataFrameSize(), true);
 
         String line;
@@ -85,7 +91,12 @@ public class DataProvider {
         line = outputArray.get(0);
         line = line.substring(1, line.length() - 1);
 
-        return concat(new String[]{"Id"}, line.split(", "));
+        String[] items = line.split(",");
+        for (int index = 0; index < items.length; index++) {
+            items[index] = items[index].trim();
+        }
+
+        return concat(new String[]{"Id"}, items);
 
     }
 

@@ -9,12 +9,12 @@ public class PythonCmd {
     }
 
     public static String[] getDataFrame() {
-        return new String[]{"print(*(';'.join([str(_) for _ in df.iloc[index].to_list()]) " +
-                "for index in range(len(df))), sep='\\n' )"};
+        return new String[]{"print(*(';'.join([str(_) for _ in df.iloc[index].to_list()]) "
+                + "for index in range(len(df))), sep='\\n' )"};
     }
 
     public static String[] loadDataFrame(String filename) {
-        StringBuilder commands=new StringBuilder("filename=\"" );
+        StringBuilder commands = new StringBuilder("filename=\"");
 
         commands.append(filename);
         commands.append("\"");
@@ -28,7 +28,7 @@ public class PythonCmd {
     }
 
     public static String[] getDatFrameSlice(int start, int end) {
-        StringBuilder commands=new StringBuilder("print(df[");
+        StringBuilder commands = new StringBuilder("print(df[");
         commands.append(start);
         commands.append(":");
         commands.append(end);

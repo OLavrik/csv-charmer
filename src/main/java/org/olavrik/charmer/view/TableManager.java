@@ -5,35 +5,33 @@ import org.olavrik.charmer.controller.DataProvider;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class TableManager extends JFrame {
-    public Object[] columnsHeader;
-    public Object[][] dataArray;
-    public ArrayList<String[]> datachanges = new ArrayList<>();
-    public DataProvider dataProvider;
+    private Object[] columnsHeader;
+    private Object[][] dataArray;
+    private ArrayList<String[]> datachanges = new ArrayList<>();
+    private DataProvider dataProvider;
 
-    DefaultTableModel model;
-    Box contents = new Box(BoxLayout.X_AXIS);
-    JTable table1;
+    private DefaultTableModel model;
+    private Box contents = new Box(BoxLayout.X_AXIS);
+    private JTable table1;
 
 
     public TableManager(DataProvider dataProvider) {
         super();
-        this.dataProvider=dataProvider;
+        this.dataProvider = dataProvider;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(screenSize.width/2,screenSize.height/2);
+        setSize(screenSize.width / 2, screenSize.height / 2);
         setVisible(true);
         setResizable(true);
     }
 
 
     public void openCSV(String filePath) throws IOException {
+        filePath = filePath.replace('\\', '/');
         dataProvider.openCSVSession(filePath);
 
         String fileName = Paths.get(filePath).getFileName().toString();

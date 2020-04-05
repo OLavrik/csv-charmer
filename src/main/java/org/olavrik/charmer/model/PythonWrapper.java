@@ -39,7 +39,7 @@ public class PythonWrapper {
     }
 
 
-    public Boolean checkPython() throws  InterruptedException {
+    public Boolean checkPython() throws InterruptedException {
         try {
 
 
@@ -65,7 +65,7 @@ public class PythonWrapper {
                 }
             }
             return false;
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -87,12 +87,14 @@ public class PythonWrapper {
                 this.bufferedWriter.write(command[i]);
                 this.bufferedWriter.newLine();
             }
-            this.bufferedWriter.flush();
-            if (flag) {
-                return readOutput();
+            if (!flag) {
+                this.bufferedWriter.write("print(\"Success\")");
+                this.bufferedWriter.newLine();
             }
+            this.bufferedWriter.flush();
+            ArrayList<String> output = readOutput();
 
-            return null;
+            return flag ? output : null;
         } catch (IOException e) {
             e.printStackTrace();
 
