@@ -15,7 +15,7 @@ public class PythonCmdTest {
         String fileName="test.test";
         String[] actual=pythonCmd.loadDataFrame(fileName);
         assertEquals("filename=\"test.test\"", actual[0]);
-        assertEquals("df=pd.read_csv(filename, sep=',')", actual[1]);
+        assertEquals("df=pd.read_csv(filename)", actual[1]);
     }
 
     @Test
