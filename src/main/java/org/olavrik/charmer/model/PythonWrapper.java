@@ -12,11 +12,23 @@ public final class PythonWrapper {
     private final int timeWhait = 100;
 
     public PythonWrapper() {
-
+        String os = System.getProperty("os.name").toLowerCase();
+        Boolean isLinux = os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix");
+        if (isLinux) {
+            pythonPath = "/usr/local/bin/python3";
+        } else {
+            String[] paths = System.getenv("PATH").toLowerCase().split(";");
+            for (String path : paths) {
+                if (path.contains("python3")) {
+                    pythonPath = new StringBuilder(path).append("/python.exe").toString();
+                    break;
+                }
+            }
+        }
     }
 
     public void setPythonPath(final String possiblePythonPath) {
-        this.pythonPath = (possiblePythonPath == null) ? "/usr/local/bin/python3" : possiblePythonPath;
+        this.pythonPath = (possiblePythonPath == null) ? pythonPath : possiblePythonPath;
     }
 
 

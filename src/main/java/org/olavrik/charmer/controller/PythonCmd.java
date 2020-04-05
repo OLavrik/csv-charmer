@@ -41,6 +41,10 @@ public final class PythonCmd {
         return new String[]{commands.toString()};
     }
 
+    public static String[] getDataHistograms() {
+        return new String[]{"print(*(';'.join([str(_) for _ in list(df[name].value_counts().sort_index())]) "
+                + "for name in df.columns), sep='\\n')"};
+    }
 
     public static String[] addRow(final Integer indexRow, final ArrayList<String> row) {
         final int numCommands = 7;
