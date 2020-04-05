@@ -13,7 +13,7 @@ This program supports such baseline functionality as follows:
 All data processing is implemented in Python, Java is only GUI featured. 
 
 #### App example
-![main screen](https://github.com/OLavrik/csv-charmer/blob/master/mainScreen.png)
+![main screen](https://github.com/OLavrik/csv-charmer/blob/master/image_main.png)
 
 #### Roadmap
 * Support reopening files
@@ -25,7 +25,7 @@ All data processing is implemented in Python, Java is only GUI featured.
 
 ## User guide
 * First when you launch the app will ask you *python3* path if it was not found autoamtically
-![Python3 modal](https://github.com/OLavrik/csv-charmer/blob/master/pythonmodal.png)
+![Python3 modal](https://github.com/OLavrik/csv-charmer/blob/master/image_modal.png)
 
 * After python3 set up. You will be asked to enter path to the CSV texturally. This file will be opened and shown. 
 **You could try files from *test* directory of this repo**
@@ -33,7 +33,7 @@ All data processing is implemented in Python, Java is only GUI featured.
 * Editing: 
   1. For editing the cell - double click it and enter the new value
   2. For inserting or deleting row, press RMB(right mouse button or two finger press on MacOS)
-  ![Editing popup](https://github.com/OLavrik/csv-charmer/blob/master/popup.png)
+  ![Editing popup](https://github.com/OLavrik/csv-charmer/blob/master/image_popup.png)
 
 * Saving
   Currently supported only saving the same file. Click save button and ok in opened message box to save your progress. 
