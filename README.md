@@ -5,6 +5,7 @@ This Java's programm is show CSV-tables by using Python's intepreter with pandas
 
 This program supports such baseline functionality as follows: 
 * Opening and showing CSV files
+* Showing initial columns state histogram
 * Editing cells 
 * Saving edited data
 * Inserting new row before/after
