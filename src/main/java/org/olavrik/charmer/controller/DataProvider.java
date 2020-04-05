@@ -1,6 +1,4 @@
-/**
- * Info about this package doing something for package-info.java file.
- */
+
 package org.olavrik.charmer.controller;
 
 import org.olavrik.charmer.model.PythonWrapper;
@@ -10,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataProvider {
+public final class DataProvider {
     private PythonWrapper pythonWrapper;
     private String pythonPath;
 
@@ -27,28 +25,33 @@ public class DataProvider {
 
     }
 
-    public Boolean setPythonPathIfPossible(String pythonPath) throws InterruptedException {
-        PythonWrapper pythonWrapper = new PythonWrapper();
+    public Boolean setPythonPathIfPossible(final String possiblePythonPath) throws InterruptedException {
+        PythonWrapper pythonCheker = new PythonWrapper();
 
-        pythonPath = pythonPath != null ? pythonPath.replace('\\', '/') : pythonPath;
+        this.pythonPath = possiblePythonPath != null
+                ? possiblePythonPath.replace('\\', '/') : possiblePythonPath;
 
-        pythonWrapper.setPythonPath(pythonPath);
-        this.pythonPath = pythonWrapper.getPythonPath();
-        return pythonWrapper.checkPython();
+        pythonCheker.setPythonPath(this.pythonPath);
+
+        return pythonCheker.checkPython();
     }
 
-    public Boolean checkFile(String filePath) {
+    public Boolean checkFile(final String filePath) {
         return new File(filePath.replace('\\', '/')).exists();
     }
 
 
-    public void openCSVSession(String filename) throws IOException {
+    public void openCSVSession(final String filename) throws IOException {
         this.pythonWrapper = new PythonWrapper();
 
         this.pythonWrapper.setPythonPath(pythonPath);
         this.pythonWrapper.startProcess();
         this.pythonWrapper.runCmd(PythonCmd.init(), false);
         this.pythonWrapper.runCmd(PythonCmd.loadDataFrame(filename.replace('\\', '/')), false);
+    }
+
+    public void deleteRow(final Integer indexRow) {
+        this.pythonWrapper.runCmd(PythonCmd.deleteRow(indexRow), false);
     }
 
 
@@ -97,6 +100,19 @@ public class DataProvider {
         }
 
         return concat(new String[]{"Id"}, items);
+
+    }
+
+    public void changeCellValue(final Integer indexRow, final String nameColumn, final String newVal) {
+        this.pythonWrapper.runCmd(PythonCmd.changeValueCell(indexRow, nameColumn, newVal), false);
+    }
+
+    public void saveCSV() {
+        this.pythonWrapper.runCmd(PythonCmd.saveCSV(), false);
+    }
+
+    public void addRow(final Integer indexRow, final ArrayList<String> newRow) {
+        this.pythonWrapper.runCmd(PythonCmd.addRow(indexRow, newRow), false);
 
     }
 

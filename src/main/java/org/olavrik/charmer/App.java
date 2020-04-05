@@ -7,9 +7,12 @@ import org.olavrik.charmer.view.TableManager;
 import javax.swing.*;
 import java.io.IOException;
 
-public class App {
+public final class App {
+    private App() {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    }
+
+    public static void main(final String[] args) throws IOException, InterruptedException {
         DataProvider dataProvider = new DataProvider();
         TableManager tableManager = new TableManager(dataProvider);
 
@@ -25,7 +28,7 @@ public class App {
             tableManager.dispose();
 
         } else {
-            while (!dataProvider.checkFile(filename)) {
+            while (!dataProvider.checkFile(filename.replace('\\', '/'))) {
                 JOptionPane.showMessageDialog(null,
                         "Error, file doesn't exist, please try again");
                 filename = JOptionPane.showInputDialog(tableManager, "Enter csv path:");
