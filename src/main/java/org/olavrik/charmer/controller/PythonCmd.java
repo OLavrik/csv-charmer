@@ -22,7 +22,7 @@ public final class PythonCmd {
         commands.append(filename);
         commands.append("\"");
 
-        return new String[]{commands.toString(), "df=pd.read_csv(filename, sep=',')"};
+        return new String[]{commands.toString(), "df=pd.read_csv(filename)"};
     }
 
     public static String[] init() {
