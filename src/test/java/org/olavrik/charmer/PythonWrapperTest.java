@@ -19,7 +19,8 @@ public class PythonWrapperTest {
     }
 
     @Test
-    public void checkPythonSum(){
+    public void checkPythonSum() throws IOException {
+
         ArrayList<String> actual=this.pythonWrapper.runCmd(new String[]{"2+2"}, true);
         assertEquals("4", actual.get(0));
     }

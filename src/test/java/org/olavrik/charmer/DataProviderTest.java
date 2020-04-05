@@ -28,23 +28,26 @@ public class DataProviderTest {
 
     @Test
     public void checkCallPython() throws InterruptedException {
-        assertEquals(new Boolean(true), dataProvider.checkPython(System.getenv("PYTHON_PATH")));
+        assertEquals(new Boolean(true), dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH")));
     }
 
     @Test
-    public void checkSizeData() throws IOException {
+    public void checkSizeData() throws IOException, InterruptedException {
+        dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH"));
         dataProvider.openCSVSession(filePath);
         assertEquals("6", dataProvider.getCSVSize());
     }
 
     @Test
-    public void checkDataHeader() throws IOException {
+    public void checkDataHeader() throws IOException, InterruptedException {
+        dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH"));
         dataProvider.openCSVSession(filePath);
         assertArrayEquals(new String[]{"Id","\'name\'", "\'mass_to_earth\'"}, dataProvider.getCSVHeader());
     }
 
     @Test
-    public void checkCSVContent() throws IOException {
+    public void checkCSVContent() throws IOException, InterruptedException {
+        dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH"));
         dataProvider.openCSVSession(filePath);
         assertArrayEquals(new String[][]{{"0", "\"Earth, planet\"", "1.0"}, {"1", "Moon", "0.606"}, {"2","Mars", "0.107"}}, dataProvider.getCSVContent());
 
