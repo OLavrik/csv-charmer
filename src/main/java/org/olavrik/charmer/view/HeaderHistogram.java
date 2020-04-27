@@ -10,7 +10,7 @@ public final class HeaderHistogram extends JPanel {
     private String current;
 
     public void setCurrent(final String futureCur) {
-        this.current = futureCur;
+        current = futureCur;
     }
 
 
@@ -43,7 +43,7 @@ public final class HeaderHistogram extends JPanel {
     @Override
     public void paint(final Graphics g) {
         if (current != null) {
-            int[] data = this.dataBins.get(current);
+            int[] data = dataBins.get(current);
             int size = data.length;
 
             Graphics2D g2 = (Graphics2D) g;

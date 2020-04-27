@@ -29,10 +29,10 @@ public final class DataProvider {
     public Boolean setPythonPathIfPossible(final String possiblePythonPath) throws InterruptedException {
         PythonWrapper pythonCheker = new PythonWrapper();
 
-        this.pythonPath = possiblePythonPath != null
+        pythonPath = possiblePythonPath != null
                 ? possiblePythonPath.replace('\\', '/') : possiblePythonPath;
 
-        pythonCheker.setPythonPath(this.pythonPath);
+        pythonCheker.setPythonPath(pythonPath);
 
         return pythonCheker.checkPython();
     }
@@ -43,21 +43,21 @@ public final class DataProvider {
 
 
     public void openCSVSession(final String filename) throws IOException {
-        this.pythonWrapper = new PythonWrapper();
+        pythonWrapper = new PythonWrapper();
 
-        this.pythonWrapper.setPythonPath(pythonPath);
-        this.pythonWrapper.startProcess();
-        this.pythonWrapper.runCmd(PythonCmd.init(), false);
-        this.pythonWrapper.runCmd(PythonCmd.loadDataFrame(filename.replace('\\', '/')), false);
+        pythonWrapper.setPythonPath(pythonPath);
+        pythonWrapper.startProcess();
+        pythonWrapper.runCmd(PythonCmd.init(), false);
+        pythonWrapper.runCmd(PythonCmd.loadDataFrame(filename.replace('\\', '/')), false);
     }
 
     public void deleteRow(final Integer indexRow) {
-        this.pythonWrapper.runCmd(PythonCmd.deleteRow(indexRow), false);
+        pythonWrapper.runCmd(PythonCmd.deleteRow(indexRow), false);
     }
 
 
     public String[][] getCSVContent() {
-        ArrayList<String> outputArray = this.pythonWrapper.runCmd(PythonCmd.getDataFrame(), true);
+        ArrayList<String> outputArray = pythonWrapper.runCmd(PythonCmd.getDataFrame(), true);
 
         List<String[]> data = new ArrayList<String[]>();
 
@@ -79,7 +79,7 @@ public final class DataProvider {
     }
 
     public String getCSVSize() {
-        ArrayList<String> outputArray = this.pythonWrapper.runCmd(PythonCmd.getDataFrameSize(), true);
+        ArrayList<String> outputArray = pythonWrapper.runCmd(PythonCmd.getDataFrameSize(), true);
 
         String line;
         line = outputArray.get(0);
@@ -88,7 +88,7 @@ public final class DataProvider {
     }
 
     public String[] getCSVHeader() {
-        ArrayList<String> outputArray = this.pythonWrapper.runCmd(PythonCmd.getHeader(), true);
+        ArrayList<String> outputArray = pythonWrapper.runCmd(PythonCmd.getHeader(), true);
 
         String line;
 
@@ -106,7 +106,7 @@ public final class DataProvider {
 
 
     public HashMap<String, int[]> getCSVHistograms(final String[] headerCaptions) {
-        ArrayList<String> outputArray = this.pythonWrapper.runCmd(PythonCmd.getDataHistograms(), true);
+        ArrayList<String> outputArray = pythonWrapper.runCmd(PythonCmd.getDataHistograms(), true);
 
         HashMap<String, int[]> data = new HashMap<String, int[]>();
 
@@ -125,15 +125,15 @@ public final class DataProvider {
     }
 
     public void changeCellValue(final Integer indexRow, final String nameColumn, final String newVal) {
-        this.pythonWrapper.runCmd(PythonCmd.changeValueCell(indexRow, nameColumn, newVal), false);
+        pythonWrapper.runCmd(PythonCmd.changeValueCell(indexRow, nameColumn, newVal), false);
     }
 
     public void saveCSV() {
-        this.pythonWrapper.runCmd(PythonCmd.saveCSV(), false);
+        pythonWrapper.runCmd(PythonCmd.saveCSV(), false);
     }
 
     public void addRow(final Integer indexRow, final ArrayList<String> newRow) {
-        this.pythonWrapper.runCmd(PythonCmd.addRow(indexRow, newRow), false);
+        pythonWrapper.runCmd(PythonCmd.addRow(indexRow, newRow), false);
 
     }
 

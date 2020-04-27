@@ -28,13 +28,12 @@ public final class PythonWrapper {
     }
 
     public void setPythonPath(final String possiblePythonPath) {
-        this.pythonPath = (possiblePythonPath == null) ? pythonPath : possiblePythonPath;
+        pythonPath = (possiblePythonPath == null) ? pythonPath : possiblePythonPath;
     }
 
 
     private ArrayList<String> readOutput() throws IOException, InterruptedException {
         BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         ArrayList<String> dataOutput = new ArrayList<String>();
         while (!outputReader.ready()) {
             Thread.sleep(timeWhait);
@@ -52,7 +51,7 @@ public final class PythonWrapper {
         try {
 
 
-            ProcessBuilder checkpython = new ProcessBuilder(this.pythonPath, "-i", "--version");
+            ProcessBuilder checkpython = new ProcessBuilder(pythonPath, "-i", "--version");
             Process check = checkpython.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(check.getInputStream()));
             BufferedReader readererror = new BufferedReader(new InputStreamReader(check.getErrorStream()));
@@ -81,23 +80,23 @@ public final class PythonWrapper {
 
 
     public void startProcess() throws IOException {
-        this.processBuilder = new ProcessBuilder(this.pythonPath, "-i");
-        this.process = this.processBuilder.start();
+        processBuilder = new ProcessBuilder(pythonPath, "-i");
+        process = processBuilder.start();
 
     }
 
     public ArrayList<String> runCmd(final String[] command, final Boolean flag) {
         try {
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             for (int i = 0; i < command.length; i++) {
-                this.bufferedWriter.write(command[i]);
-                this.bufferedWriter.newLine();
+                bufferedWriter.write(command[i]);
+                bufferedWriter.newLine();
             }
             if (!flag) {
-                this.bufferedWriter.write("print(\"Success\")");
-                this.bufferedWriter.newLine();
+                bufferedWriter.write("print(\"Success\")");
+                bufferedWriter.newLine();
             }
-            this.bufferedWriter.flush();
+            bufferedWriter.flush();
             ArrayList<String> output = readOutput();
 
             return flag ? output : null;

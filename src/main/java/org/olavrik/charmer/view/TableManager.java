@@ -18,7 +18,6 @@ import java.util.HashMap;
 public final class TableManager extends JFrame {
     private Object[] columnsHeader;
     private Object[][] dataArray;
-    private ArrayList<String[]> datachanges = new ArrayList<>();
     private DataProvider dataProvider;
 
     private DefaultTableModel model;
@@ -45,8 +44,8 @@ public final class TableManager extends JFrame {
         String[][] data = dataProvider.getCSVContent();
         HashMap<String, int[]> dataHistograms = dataProvider.getCSVHistograms(header);
 
-        this.dataArray = data;
-        this.columnsHeader = header;
+        dataArray = data;
+        columnsHeader = header;
 
         setTitle(fileName);
 
@@ -217,25 +216,25 @@ public final class TableManager extends JFrame {
             super(new BorderLayout());
 
             Box contentsHist = new Box(BoxLayout.Y_AXIS);
-            this.label = new JLabel();
+            label = new JLabel();
             final int size = 12;
-            this.label.setFont(new Font("Consolas", Font.BOLD, size));
+            label.setFont(new Font("Consolas", Font.BOLD, size));
             contentsHist.add(label);
 
-            this.hist = new HeaderHistogram();
-            contentsHist.add(this.hist);
+            hist = new HeaderHistogram();
+            contentsHist.add(hist);
 
-            this.hist.set(histogramBins);
+            hist.set(histogramBins);
 
-            this.add(contentsHist);
+            add(contentsHist);
         }
 
         @Override
         public Component getTableCellRendererComponent(final JTable table, final Object value,
                                                        final boolean isSelected, final boolean hasFocus,
                                                        final int row, final int column) {
-            this.label.setText(value.toString());
-            this.hist.setCurrent(value.toString());
+            label.setText(value.toString());
+            hist.setCurrent(value.toString());
             return this;
         }
 
