@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.olavrik.charmer.controller.DataProvider;
+import org.olavrik.charmer.exceptions.PythonException;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class DataProviderTest {
     private DataProvider dataProvider;
-    String filePath= Paths.get("").toAbsolutePath().toString()+
+    private final String filePath= Paths.get("").toAbsolutePath().toString()+
             "/src/test/java/org/olavrik/charmer/test.csv";
 
     @Before
@@ -23,33 +24,38 @@ public class DataProviderTest {
 
     @Test
     public void checkFileExist(){
-        assertEquals(new Boolean(true), dataProvider.checkFile(filePath));
+        assertEquals(Boolean.TRUE, dataProvider.checkFile(filePath));
     }
 
     @Test
-    public void checkCallPython() throws InterruptedException {
-        assertEquals(new Boolean(true), dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH")));
+    public void checkCallPython() {
+        assertEquals(Boolean.TRUE, dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH")));
     }
 
     @Test
-    public void checkSizeData() throws IOException, InterruptedException {
+    public void checkSizeData() throws IOException, PythonException {
+
         dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH"));
+        dataProvider.startSession();
         dataProvider.openCSVSession(filePath);
         assertEquals("6", dataProvider.getCSVSize());
     }
 
     @Test
-    public void checkDataHeader() throws IOException, InterruptedException {
+    public void checkDataHeader() throws IOException, PythonException {
         dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH"));
+        dataProvider.startSession();
         dataProvider.openCSVSession(filePath);
         assertArrayEquals(new String[]{"Id","\'name\'", "\'mass_to_earth\'"}, dataProvider.getCSVHeader());
     }
 
     @Test
-    public void checkCSVContent() throws IOException, InterruptedException {
+    public void checkCSVContent() throws IOException, PythonException {
         dataProvider.setPythonPathIfPossible(System.getenv("PYTHON_PATH"));
+        dataProvider.startSession();
         dataProvider.openCSVSession(filePath);
-        assertArrayEquals(new String[][]{{"0", "\"Earth, planet\"", "1.0"}, {"1", "Moon", "0.606"}, {"2","Mars", "0.107"}}, dataProvider.getCSVContent());
+        assertArrayEquals(new String[][]{{"0", "\"Earth, planet\"", "1.0"}, {"1", "Moon", "0.606"}, {"2","Mars", "0.107"}},
+                dataProvider.getCSVContent());
 
     }
 

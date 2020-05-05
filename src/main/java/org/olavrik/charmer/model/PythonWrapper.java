@@ -5,105 +5,106 @@ import java.util.ArrayList;
 
 
 public final class PythonWrapper {
-    private ProcessBuilder processBuilder;
     private String pythonPath;
     private Process process;
-    private BufferedWriter bufferedWriter;
-    private final int timeWhait = 100;
+    private final int timeWait = 100;
 
     public PythonWrapper() {
         String os = System.getProperty("os.name").toLowerCase();
-        Boolean isLinux = os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix");
+        boolean isLinux = os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix");
+
         if (isLinux) {
             pythonPath = "/usr/local/bin/python3";
         } else {
             String[] paths = System.getenv("PATH").toLowerCase().split(";");
+
             for (String path : paths) {
                 if (path.contains("python3")) {
-                    pythonPath = new StringBuilder(path).append("/python.exe").toString();
+                    pythonPath = path + "/python.exe";
                     break;
                 }
             }
         }
     }
 
+
+    public String getPythonPath() {
+        return pythonPath;
+    }
+
     public void setPythonPath(final String possiblePythonPath) {
-        this.pythonPath = (possiblePythonPath == null) ? pythonPath : possiblePythonPath;
+        pythonPath = (possiblePythonPath == null) ? pythonPath : possiblePythonPath;
     }
 
 
     private ArrayList<String> readOutput() throws IOException, InterruptedException {
         BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        ArrayList<String> dataOutput = new ArrayList<String>();
-        while (!outputReader.ready()) {
-            Thread.sleep(timeWhait);
-        }
-        String line;
+        ArrayList<String> dataOutput = new ArrayList<>();
 
+        while (!outputReader.ready()) {
+            Thread.sleep(timeWait);
+        }
+
+        String line;
         while (outputReader.ready() && (line = outputReader.readLine()) != null) {
             dataOutput.add(line);
         }
+
         return dataOutput;
     }
 
 
-    public Boolean checkPython() throws InterruptedException {
+    public Boolean check(final String[] commands, final String[] lookingFor) {
         try {
-
-
-            ProcessBuilder checkpython = new ProcessBuilder(this.pythonPath, "-i", "--version");
-            Process check = checkpython.start();
+            ProcessBuilder checkPython = new ProcessBuilder(commands);
+            Process check = checkPython.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(check.getInputStream()));
-            BufferedReader readererror = new BufferedReader(new InputStreamReader(check.getErrorStream()));
 
-            while (!reader.ready() && !readererror.ready()) {
-                Thread.sleep(timeWhait);
-            }
-
-            if (readererror.ready()) {
-                return false;
+            while (!reader.ready()) {
+                Thread.sleep(timeWait);
             }
 
             String line;
             if (reader.ready()) {
                 line = reader.readLine();
+                boolean flag = true;
 
-                return line != null && line.contains("Python") && line.contains("3.");
+                if (line != null) {
+                    for (String elem : lookingFor) {
+                        flag = flag && line.contains(elem);
+                    }
+
+                    return flag;
+                } else {
+                    return false;
+                }
             }
             return false;
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             return false;
         }
-
-
     }
 
 
     public void startProcess() throws IOException {
-        this.processBuilder = new ProcessBuilder(this.pythonPath, "-i");
-        this.process = this.processBuilder.start();
-
+        ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, "-i");
+        process = processBuilder.start();
     }
 
-    public ArrayList<String> runCmd(final String[] command, final Boolean flag) {
+    public ArrayList<String> runCmd(final String[] command) {
         try {
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-            for (int i = 0; i < command.length; i++) {
-                this.bufferedWriter.write(command[i]);
-                this.bufferedWriter.newLine();
-            }
-            if (!flag) {
-                this.bufferedWriter.write("print(\"Success\")");
-                this.bufferedWriter.newLine();
-            }
-            this.bufferedWriter.flush();
-            ArrayList<String> output = readOutput();
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
 
-            return flag ? output : null;
+            for (String s : command) {
+                bufferedWriter.write(s);
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.flush();
+
+            return readOutput();
         } catch (IOException | InterruptedException e) {
             return null;
-
         }
     }
 }

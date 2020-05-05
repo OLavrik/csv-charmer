@@ -5,6 +5,7 @@ import org.olavrik.charmer.model.PythonWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -19,23 +20,23 @@ public class PythonWrapperTest {
     }
 
     @Test
-    public void checkPythonSum() throws IOException {
+    public void checkPythonSum() {
 
-        ArrayList<String> actual=this.pythonWrapper.runCmd(new String[]{"2+2"}, true);
-        assertEquals("4", actual.get(0));
+        ArrayList<String> actual=this.pythonWrapper.runCmd(new String[]{"2+2"});
+        assertEquals("4", Objects.requireNonNull(actual).get(0));
     }
 
     @Test
     public void checkPythonPrint(){
-        ArrayList<String> actual=this.pythonWrapper.runCmd(new String[]{"print(\"meow\")"}, true);
-        assertEquals("meow", actual.get(0));
+        ArrayList<String> actual=this.pythonWrapper.runCmd(new String[]{"print(\"meow\")"});
+        assertEquals("meow", Objects.requireNonNull(actual).get(0));
     }
 
     @Test
     public void checkPandas(){
         String[] commands=new String[]{"import pandas as pd", "print (pd.Series([1])[0])"};
-        ArrayList<String> actual=this.pythonWrapper.runCmd(commands, true);
-        assertEquals("1",actual.get(0));
+        ArrayList<String> actual=this.pythonWrapper.runCmd(commands);
+        assertEquals("1", Objects.requireNonNull(actual).get(0));
     }
 
 
