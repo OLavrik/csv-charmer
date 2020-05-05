@@ -4,27 +4,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 
-public final class HeaderHistogram extends JPanel {
-    private HashMap<String, int[]> dataBins;
+final class HeaderHistogram extends JPanel {
+    private final HashMap<String, int[]> dataBins;
     private final int maxVal = 256;
     private String current;
 
-    public void setCurrent(final String futureCur) {
+    void setCurrent(final String futureCur) {
         current = futureCur;
     }
 
 
-    public HeaderHistogram() {
+    HeaderHistogram() {
         dataBins = new HashMap<>();
         final int width = 40;
         final int height = 80;
+
         setPreferredSize(new Dimension(width, height));
     }
 
-    private int[] normilezeData(final int[] data) {
+    private int[] normalizeData(final int[] data) {
         int max = 0;
-        for (int i = 0; i < data.length; i++) {
-            max = Math.max(max, data[i]);
+
+        for (int datum : data) {
+            max = Math.max(max, datum);
         }
 
         for (int i = 0; i < data.length; i++) {
@@ -36,7 +38,7 @@ public final class HeaderHistogram extends JPanel {
 
     public void set(final HashMap<String, int[]> data) {
         for (String key : data.keySet()) {
-            dataBins.put(key, normilezeData(data.get(key)));
+            dataBins.put(key, normalizeData(data.get(key)));
         }
     }
 
